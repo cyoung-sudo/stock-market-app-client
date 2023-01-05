@@ -1,11 +1,16 @@
 import "./App.css";
 // React
 import { useState } from "react";
+// Socket
+import { io } from "socket.io-client";
 // Components
 import Chart from "./components/Chart";
 import Form from "./components/Form";
 // APIs
 import * as StockDataAPI from "./apis/StockDataAPI";
+
+// Connect to server (proxy server path)
+const socket = io();
 
 function App() {
   // Controlled input
