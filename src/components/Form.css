@@ -1,0 +1,13 @@
+#form {
+  display: flex;
+}
+
+.form-group input {
+  padding: 0.3rem 0.5rem;
+  font-size: var(--default-font);
+}
+
+.form-submit input {
+  padding: 0.3rem 0.5rem;
+  font-size: var(--default-font);
+}
