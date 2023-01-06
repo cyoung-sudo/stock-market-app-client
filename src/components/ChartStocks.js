@@ -6,7 +6,7 @@ export default function(props) {
       <ul id="chartStocks">
         {props.chartStocks.map((chartStock, idx) => (
           <li key={idx}>
-            <button>{chartStock.ticker}</button>
+            <button onClick={() => props.handleDelete(chartStock.ticker)}>{chartStock.ticker}</button>
           </li>
         ))}
       </ul>

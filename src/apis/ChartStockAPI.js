@@ -10,3 +10,14 @@ export const create = async ticker => {
 
   return res;
 };
+
+//----- Delete a chart-stock
+export const deleteOne = async ticker => {
+  const res = await api.request({
+    method: "DELETE",
+    data: { ticker },
+    url: "/api/chartStock"
+  });
+
+  return res;
+};

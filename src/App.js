@@ -1,6 +1,6 @@
 import "./App.css";
 // React
-import { useState } from "react";
+import { useState, useEffect } from "react";
 // Socket
 import { io } from "socket.io-client";
 // Components
@@ -20,6 +20,16 @@ function App() {
   // Requested data
   const [chartStocks, setChartStocks] = useState(null);
   const [chartData, setChartData] = useState(null);
+
+  //----- Retrieve data on load
+  useEffect(() => {
+    StockDataAPI.getAll()
+    .then(res => {
+      setChartStocks(res.data.chartStocks);
+      setChartData(res.data.chartData);
+    })
+    .catch(err => console.log(err));
+  }, [])
 
   //----- Submit form data
   const handleSubmit = e => {
@@ -48,6 +58,15 @@ function App() {
     .catch(err => console.log(err));
   };
 
+  //----- Delete an existing chart-stock
+  const handleDelete = ticker => {
+    ChartStockAPI.deleteOne(ticker)
+    .then(res => {
+      console.log("Ticker removed");
+    })
+    .catch(err => console.log(err));
+  };
+
   return (
     <div id="app">
       <div id="app-header">
@@ -60,7 +79,9 @@ function App() {
       </div>
 
       <div id="app-chartStocks-wrapper">
-        <ChartStocks chartStocks={chartStocks}/>
+        <ChartStocks 
+          chartStocks={chartStocks}
+          handleDelete={handleDelete}/>
       </div>
 
       <div id="app-form-wrappper">
