@@ -3,3 +3,9 @@
   margin-bottom: 1rem;
   list-style: none;
 }
+
+#chartStocks button {
+  margin: 0 0.3rem;
+  padding: 0.1rem 0.2rem;
+  font-size: var(--default-font);
+}

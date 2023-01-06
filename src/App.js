@@ -7,6 +7,7 @@ import { io } from "socket.io-client";
 import Chart from "./components/Chart";
 import Form from "./components/Form";
 import ChartStocks from "./components/ChartStocks";
+import UpdateStatus from "./components/UpdateStatus";
 // APIs
 import * as ChartStockAPI from "./apis/ChartStockAPI";
 import * as StockDataAPI from "./apis/StockDataAPI";
@@ -20,6 +21,10 @@ function App() {
   // Requested data
   const [chartStocks, setChartStocks] = useState(null);
   const [chartData, setChartData] = useState(null);
+  // Update status
+  const [updated, setUpdated] = useState(true);
+  // Manual refresh
+  const [refresh, setRefresh] = useState(true);
 
   //----- Retrieve data on load
   useEffect(() => {
@@ -27,9 +32,17 @@ function App() {
     .then(res => {
       setChartStocks(res.data.chartStocks);
       setChartData(res.data.chartData);
+      setUpdated(true);
     })
     .catch(err => console.log(err));
-  }, [])
+  }, [refresh]);
+
+  //----- Handle chart updates from server
+  useEffect(() => {
+    socket.on("update_chart", () => {
+      setUpdated(false);
+    });
+  }, [socket]);
 
   //----- Submit form data
   const handleSubmit = e => {
@@ -51,6 +64,8 @@ function App() {
       } else if (res.data.success) {
         setChartStocks(res.data.chartStocks);
         setChartData(res.data.chartData);
+        // Notify server of chart update
+        socket.emit("chart_updated");
       } else {
         console.log(res.data.message);
       }
@@ -63,6 +78,9 @@ function App() {
     ChartStockAPI.deleteOne(ticker)
     .then(res => {
       console.log("Ticker removed");
+      setRefresh(state => !state);
+      // Notify server of chart update
+      socket.emit("chart_updated");
     })
     .catch(err => console.log(err));
   };
@@ -72,6 +90,12 @@ function App() {
       <div id="app-header">
         <h1>Stock Market App</h1>
         <div>Compare stocks with weekly price-action</div>
+      </div>
+
+      <div id="app-updateStatus-wrapper">
+        <UpdateStatus 
+          updated={updated}
+          setRefresh={setRefresh}/>
       </div>
 
       <div id="app-chart-wrapper">
