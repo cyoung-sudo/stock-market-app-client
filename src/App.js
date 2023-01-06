@@ -7,6 +7,7 @@ import { io } from "socket.io-client";
 import Chart from "./components/Chart";
 import Form from "./components/Form";
 // APIs
+import * as ChartStockAPI from "./apis/ChartStockAPI";
 import * as StockDataAPI from "./apis/StockDataAPI";
 
 // Connect to server (proxy server path)
@@ -15,19 +16,28 @@ const socket = io();
 function App() {
   // Controlled input
   const [ticker, setTicker] = useState("");
-  // Requested data
-  const [weeklyData, setWeeklyData] = useState(null);
 
   //----- Submit form data
   const handleSubmit = e => {
     // Prevent refresh on submit
     e.preventDefault();
-    
-    // Retrieve weekly data for stock
-    StockDataAPI.search(ticker)
+    // Create new chart-stock
+    ChartStockAPI.create(ticker)
     .then(res => {
       if(res.data.success) {
-        setWeeklyData(res.data.weeklyData);
+        // Retrieve data for all chart-stocks
+        return StockDataAPI.getAll();
+      } else {
+        return { error: res.data.message };
+      }
+    })
+    .then(res => {
+      if(res.error) {
+        console.log(res.error);
+      } else if (res.data.success) {
+        console.log(res.data.chartData);
+      } else {
+        console.log(res.data.message);
       }
     })
     .catch(err => console.log(err));
@@ -41,7 +51,7 @@ function App() {
       </div>
 
       <div id="app-chart-wrapper">
-        <Chart weeklyData={weeklyData}/>
+        <Chart/>
       </div>
 
       <div id="app-form-wrappper">

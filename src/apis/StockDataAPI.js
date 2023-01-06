@@ -1,11 +1,10 @@
 import api from "./configs/axiosConfig";
 
-//----- Retrieve weekly data for stock
-export const search = async ticker => {
+//----- Retrieve weekly data for all chart-stocks
+export const getAll = async () => {
   const res = await api.request({
-    method: "POST",
-    data: { ticker },
-    url: "/api/stockData"
+    method: "GET",
+    url: "/api/stockData/stocks"
   });
 
   return res;
