@@ -34,7 +34,7 @@ function App() {
     .then(res => {
       if(res.data.success) {
         // Format chart data
-        let formattedChartData = DataFormat.chartDataFormat(res.data.chartData);
+        let formattedChartData = DataFormat.chartDataFormat(res.data.chartStocks, res.data.chartData);
         setChartStocks(res.data.chartStocks);
         setChartData([...formattedChartData]);
         setUpdated(true);

@@ -1,23 +1,24 @@
 //----- Format data for chart compatibility
-export const chartDataFormat = chartData => {
+export const chartDataFormat = (chartStocks, chartData) => {
   let result = [];
 
-  chartData.forEach(stockData => {
-    let formattedStockData = [];
+  chartData.forEach((chartData, idx) => {
+    let formattedChartData = [];
     let limit = 50;
     let counter = 0;
-    for(let key in stockData) {
+    for(let key in chartData) {
       if(counter >= limit) break; // limit to past 50 weeks
 
       let formattedWeeklyData = {
+        ticker: chartStocks[idx].ticker,
         date: key,
-        close: parseInt(stockData[key]["4. close"])
+        close: parseInt(chartData[key]["4. close"])
       };
-      formattedStockData.push(formattedWeeklyData);
+      formattedChartData.push(formattedWeeklyData);
 
       counter += 1;
     }
-    result.push(formattedStockData);
+    result.push(formattedChartData);
   });
 
   return result;

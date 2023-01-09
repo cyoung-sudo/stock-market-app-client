@@ -8,12 +8,29 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  Label
 } from 'recharts';
 
 export default function Chart(props) {
   // Chart line colors
   const lineColors = ["dodgerblue", "crimson"];
+
+  // Custom tooltip
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div id="chart-tooltip">
+          <div>{payload[0].payload.date}</div>
+          <ul>
+            {payload.map((data, idx) => (
+              <li key={idx}>
+                <span style={{ color: lineColors[idx] }}>{data.payload.ticker}: ${data.payload.close}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
+    }
+  };
 
   if(props.chartData) {
     return (
@@ -28,7 +45,7 @@ export default function Chart(props) {
             <YAxis 
               
               tickCount={10}/>
-            <Tooltip />
+            <Tooltip content={<CustomTooltip/>}/>
             {props.chartData.map((stockData, idx) => (
               <Line 
                 key={idx}
