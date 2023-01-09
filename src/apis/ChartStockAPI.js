@@ -21,3 +21,13 @@ export const deleteOne = async ticker => {
 
   return res;
 };
+
+//----- Delete all chart-stocks
+export const deleteAll = async () => {
+  const res = await api.request({
+    method: "DELETE",
+    url: "/api/chartStock/all"
+  });
+
+  return res;
+};

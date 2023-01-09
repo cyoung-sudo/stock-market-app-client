@@ -11,6 +11,8 @@ import UpdateStatus from "./components/UpdateStatus";
 // APIs
 import * as ChartStockAPI from "./apis/ChartStockAPI";
 import * as StockDataAPI from "./apis/StockDataAPI";
+// Utils
+import * as DataFormat from "./utils/DataFormat";
 
 // Connect to server (proxy server path)
 const socket = io();
@@ -30,9 +32,24 @@ function App() {
   useEffect(() => {
     StockDataAPI.getAll()
     .then(res => {
-      setChartStocks(res.data.chartStocks);
-      setChartData(res.data.chartData);
-      setUpdated(true);
+      if(res.data.success) {
+        // Format chart data
+        let formattedChartData = DataFormat.chartDataFormat(res.data.chartData);
+        setChartStocks(res.data.chartStocks);
+        setChartData([...formattedChartData]);
+        setUpdated(true);
+      } else if(res.data.error === "invalid") {
+        // Reset chart
+        ChartStockAPI.deleteAll()
+        .then(() => {
+          console.log(res.data.message);
+          // Notify server of chart update
+          socket.emit("chart_updated");
+        })
+        .catch(err => console.log(err));
+      } else {
+        console.log(res.data.message);
+      }
     })
     .catch(err => console.log(err));
   }, [refresh]);
@@ -52,8 +69,7 @@ function App() {
     ChartStockAPI.create(ticker)
     .then(res => {
       if(res.data.success) {
-        // Retrieve data for all chart-stocks
-        return StockDataAPI.getAll();
+        return { success: true }
       } else {
         return { error: res.data.message };
       }
@@ -61,13 +77,10 @@ function App() {
     .then(res => {
       if(res.error) {
         console.log(res.error);
-      } else if (res.data.success) {
-        setChartStocks(res.data.chartStocks);
-        setChartData(res.data.chartData);
+      } else {
+        setRefresh(state => !state);
         // Notify server of chart update
         socket.emit("chart_updated");
-      } else {
-        console.log(res.data.message);
       }
     })
     .catch(err => console.log(err));
@@ -77,7 +90,6 @@ function App() {
   const handleDelete = ticker => {
     ChartStockAPI.deleteOne(ticker)
     .then(res => {
-      console.log("Ticker removed");
       setRefresh(state => !state);
       // Notify server of chart update
       socket.emit("chart_updated");
