@@ -11,6 +11,7 @@ import UpdateStatus from "./components/chart/UpdateStatus";
 import Loading from "./components/static/Loading";
 import Popup from "./components/popup/Popup";
 import ChartEmpty from "./components/static/ChartEmpty";
+import Footer from "./components/static/Footer";
 // APIs
 import * as ChartStockAPI from "./apis/ChartStockAPI";
 import * as StockDataAPI from "./apis/StockDataAPI";
@@ -140,60 +141,60 @@ function App() {
   if(!loading) {
     return (
       <div id="app">
-        {popupMsg && popupType &&
-          <div id="app-popup-wrapper">
-            <Popup
-              message={popupMsg}
-              type={popupType}
-              handlePopup={handlePopup}/>
-          </div>
-        }
+        <div id="app-content">
+          {popupMsg && popupType &&
+            <div id="app-popup-wrapper">
+              <Popup
+                message={popupMsg}
+                type={popupType}
+                handlePopup={handlePopup}/>
+            </div>
+          }
 
-        <div id="app-header">
-          <h1>Stock Market App</h1>
-          <div>Compare stocks with weekly price-action</div>
-        </div>
-  
-        <div id="app-updateStatus-wrapper">
-          <UpdateStatus 
-            updated={updated}
-            setRefresh={setRefresh}/>
-        </div>
-  
-        {(chartData !== null) &&
-          <div id="app-chart-wrapper">
-            <Chart 
+          <div id="app-header">
+            <h1>Stock Market App</h1>
+            <div>Compare stocks with weekly price-action</div>
+          </div>
+    
+          <div id="app-updateStatus-wrapper">
+            <UpdateStatus 
+              updated={updated}
+              setRefresh={setRefresh}/>
+          </div>
+    
+          {(chartData !== null) &&
+            <div id="app-chart-wrapper">
+              <Chart 
+                lineColors={lineColors}
+                chartData={chartData}/>
+            </div>
+          }
+
+          {(chartData === null) &&
+            <div id="app-chartEmpty-wrapper">
+              <ChartEmpty/>
+            </div>
+          }
+    
+          <div id="app-chartStocks-wrapper">
+            <ChartStocks
               lineColors={lineColors}
-              chartData={chartData}/>
+              chartStocks={chartStocks}
+              handleDelete={handleDelete}/>
           </div>
-        }
+    
+          <div id="app-form-wrappper">
+            <Form 
+              setTicker={setTicker}
+              handleSubmit={handleSubmit}/>
+          </div>
+        </div>
 
-        {(chartData === null) &&
-          <div id="app-chartEmpty-wrapper">
-            <ChartEmpty/>
-          </div>
-        }
-  
-        <div id="app-chartStocks-wrapper">
-          <ChartStocks
-            lineColors={lineColors}
-            chartStocks={chartStocks}
-            handleDelete={handleDelete}/>
-        </div>
-  
-        <div id="app-form-wrappper">
-          <Form 
-            setTicker={setTicker}
-            handleSubmit={handleSubmit}/>
-        </div>
+        <Footer/>
       </div>
     );
   } else {
-    return (
-      <div id="app">
-        <Loading/>
-      </div>
-    );
+    return <Loading/>;
   }
 }
 
