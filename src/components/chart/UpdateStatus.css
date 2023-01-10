@@ -1,4 +1,30 @@
-#updateStatus button {
-  padding: 0.1rem 0.2rem;
+#updateStatus {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#updateStatus span {
+  position: relative;
+  top: 2px;
+  right: 3px;
+}
+
+#updateStatus-updated {
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.5rem;
+  background-color: var(--light-success-color);
+}
+
+#updateStatus-outdated {
+  padding: 0.3rem 0.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: var(--light-error-color);
   font-size: var(--default-font);
+}
+
+#updateStatus-outdated:hover {
+  cursor: pointer;
+  text-decoration: underline;
 }

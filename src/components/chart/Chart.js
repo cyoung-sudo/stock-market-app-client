@@ -11,9 +11,6 @@ import {
 } from 'recharts';
 
 export default function Chart(props) {
-  // Chart line colors
-  const lineColors = ["dodgerblue", "crimson"];
-
   // Custom tooltip
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
@@ -23,7 +20,7 @@ export default function Chart(props) {
           <ul>
             {payload.map((data, idx) => (
               <li key={idx}>
-                <span style={{ color: lineColors[idx] }}>{data.payload.ticker}: ${data.payload.close}</span>
+                <span style={{ color: props.lineColors[idx] }}>{data.payload.ticker}: ${data.payload.close}</span>
               </li>
             ))}
           </ul>
@@ -55,7 +52,7 @@ export default function Chart(props) {
                 data={stockData}
                 type="monotone"
                 dataKey="close"
-                stroke={lineColors[idx]}
+                stroke={props.lineColors[idx]}
                 dot={false}/>
             ))}
           </LineChart>

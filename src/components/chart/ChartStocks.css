@@ -6,6 +6,21 @@
 
 #chartStocks button {
   margin: 0 0.3rem;
-  padding: 0.1rem 0.2rem;
+  padding: 0.3rem 0.5rem;
+  border: none;
+  border-radius: 0.5rem;
   font-size: var(--default-font);
+  font-weight: bold;
+  color: white;
+}
+
+#chartStocks button:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+#chartStocks button span {
+  position: relative;
+  top: 3px;
+  left: 2px;
 }

@@ -134,6 +134,9 @@ function App() {
     setPopupType(type);
   };
 
+  // Chart line colors
+  const lineColors = ["dodgerblue", "crimson"];
+
   if(!loading) {
     return (
       <div id="app">
@@ -159,7 +162,9 @@ function App() {
   
         {(chartData !== null) &&
           <div id="app-chart-wrapper">
-            <Chart chartData={chartData}/>
+            <Chart 
+              lineColors={lineColors}
+              chartData={chartData}/>
           </div>
         }
 
@@ -170,7 +175,8 @@ function App() {
         }
   
         <div id="app-chartStocks-wrapper">
-          <ChartStocks 
+          <ChartStocks
+            lineColors={lineColors}
             chartStocks={chartStocks}
             handleDelete={handleDelete}/>
         </div>
