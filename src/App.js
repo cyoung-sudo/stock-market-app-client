@@ -8,6 +8,7 @@ import Chart from "./components/Chart";
 import Form from "./components/Form";
 import ChartStocks from "./components/ChartStocks";
 import UpdateStatus from "./components/UpdateStatus";
+import Loading from "./components/static/Loading";
 // APIs
 import * as ChartStockAPI from "./apis/ChartStockAPI";
 import * as StockDataAPI from "./apis/StockDataAPI";
@@ -27,6 +28,8 @@ function App() {
   const [updated, setUpdated] = useState(true);
   // Manual refresh
   const [refresh, setRefresh] = useState(true);
+  // Loading status
+  const [loading, setLoading] = useState(true);
 
   //----- Retrieve data on load
   useEffect(() => {
@@ -50,6 +53,8 @@ function App() {
       } else {
         console.log(res.data.message);
       }
+      // Finished loading
+      setLoading(false);
     })
     .catch(err => console.log(err));
   }, [refresh]);
@@ -65,6 +70,8 @@ function App() {
   const handleSubmit = e => {
     // Prevent refresh on submit
     e.preventDefault();
+    // Loading data
+    setLoading(true);
     // Create new chart-stock
     ChartStockAPI.create(ticker)
     .then(res => {
@@ -88,6 +95,8 @@ function App() {
 
   //----- Delete an existing chart-stock
   const handleDelete = ticker => {
+    // Loading data
+    setLoading(true);
     ChartStockAPI.deleteOne(ticker)
     .then(res => {
       setRefresh(state => !state);
@@ -97,36 +106,44 @@ function App() {
     .catch(err => console.log(err));
   };
 
-  return (
-    <div id="app">
-      <div id="app-header">
-        <h1>Stock Market App</h1>
-        <div>Compare stocks with weekly price-action</div>
+  if(!loading) {
+    return (
+      <div id="app">
+        <div id="app-header">
+          <h1>Stock Market App</h1>
+          <div>Compare stocks with weekly price-action</div>
+        </div>
+  
+        <div id="app-updateStatus-wrapper">
+          <UpdateStatus 
+            updated={updated}
+            setRefresh={setRefresh}/>
+        </div>
+  
+        <div id="app-chart-wrapper">
+          <Chart chartData={chartData}/>
+        </div>
+  
+        <div id="app-chartStocks-wrapper">
+          <ChartStocks 
+            chartStocks={chartStocks}
+            handleDelete={handleDelete}/>
+        </div>
+  
+        <div id="app-form-wrappper">
+          <Form 
+            setTicker={setTicker}
+            handleSubmit={handleSubmit}/>
+        </div>
       </div>
-
-      <div id="app-updateStatus-wrapper">
-        <UpdateStatus 
-          updated={updated}
-          setRefresh={setRefresh}/>
+    );
+  } else {
+    return (
+      <div id="app">
+        <Loading/>
       </div>
-
-      <div id="app-chart-wrapper">
-        <Chart chartData={chartData}/>
-      </div>
-
-      <div id="app-chartStocks-wrapper">
-        <ChartStocks 
-          chartStocks={chartStocks}
-          handleDelete={handleDelete}/>
-      </div>
-
-      <div id="app-form-wrappper">
-        <Form 
-          setTicker={setTicker}
-          handleSubmit={handleSubmit}/>
-      </div>
-    </div>
-  );
+    );
+  }
 }
 
 export default App;

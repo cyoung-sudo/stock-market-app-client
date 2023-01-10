@@ -41,10 +41,13 @@ export default function Chart(props) {
             <XAxis 
               type="category"
               dataKey="date"
-              allowDuplicatedCategory={false}/>
+              allowDuplicatedCategory={false}
+              tick={{fontSize: 14}}
+              reversed/>
             <YAxis 
-              
-              tickCount={10}/>
+              type="number"
+              domain={['auto', 'auto']}
+              tick={{fontSize: 14}}/>
             <Tooltip content={<CustomTooltip/>}/>
             {props.chartData.map((stockData, idx) => (
               <Line 
@@ -53,7 +56,7 @@ export default function Chart(props) {
                 type="monotone"
                 dataKey="close"
                 stroke={lineColors[idx]}
-                dot={false} />
+                dot={false}/>
             ))}
           </LineChart>
         </ResponsiveContainer>
