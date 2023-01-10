@@ -1,0 +1,13 @@
+#popup {
+  padding: 0.5rem 0.8rem;
+  font-weight: 300;
+  font-style: italic;
+}
+
+.popup-success {
+  background-color: var(--light-success-color);
+}
+
+.popup-error {
+  background-color: var(--light-error-color);
+}

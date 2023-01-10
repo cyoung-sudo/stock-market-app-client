@@ -4,11 +4,13 @@ import { useState, useEffect } from "react";
 // Socket
 import { io } from "socket.io-client";
 // Components
-import Chart from "./components/Chart";
-import Form from "./components/Form";
-import ChartStocks from "./components/ChartStocks";
-import UpdateStatus from "./components/UpdateStatus";
+import Chart from "./components/chart/Chart";
+import Form from "./components/chart/Form";
+import ChartStocks from "./components/chart/ChartStocks";
+import UpdateStatus from "./components/chart/UpdateStatus";
 import Loading from "./components/static/Loading";
+import Popup from "./components/popup/Popup";
+import ChartEmpty from "./components/static/ChartEmpty";
 // APIs
 import * as ChartStockAPI from "./apis/ChartStockAPI";
 import * as StockDataAPI from "./apis/StockDataAPI";
@@ -30,28 +32,45 @@ function App() {
   const [refresh, setRefresh] = useState(true);
   // Loading status
   const [loading, setLoading] = useState(true);
+  // Popup
+  const [popupMsg, setPopupMsg] = useState("");
+  const [popupType, setPopupType] = useState("");
 
   //----- Retrieve data on load
   useEffect(() => {
+    // Loading in process
+    setLoading(true);
+    // Retrieve all chart-stock data
     StockDataAPI.getAll()
     .then(res => {
       if(res.data.success) {
-        // Format chart data
-        let formattedChartData = DataFormat.chartDataFormat(res.data.chartStocks, res.data.chartData);
-        setChartStocks(res.data.chartStocks);
-        setChartData([...formattedChartData]);
+        // Check for empty chart
+        if(res.data.chartData.length >= 1) {
+          // Format chart data
+          let formattedChartData = DataFormat.chartDataFormat(res.data.chartStocks, res.data.chartData);
+          setChartStocks(res.data.chartStocks);
+          setChartData([...formattedChartData]);
+        } else {
+          setChartStocks(null);
+          setChartData(null);
+        }
         setUpdated(true);
+        handlePopup("Chart updated", "success");
       } else if(res.data.error === "invalid") {
+        //--- Invalid ticker
         // Reset chart
         ChartStockAPI.deleteAll()
         .then(() => {
-          console.log(res.data.message);
+          handlePopup(res.data.message, "error");
+          setChartStocks(null);
+          setChartData(null);
           // Notify server of chart update
           socket.emit("chart_updated");
         })
         .catch(err => console.log(err));
       } else {
-        console.log(res.data.message);
+        //--- API limit reached
+        handlePopup(res.data.message, "error");
       }
       // Finished loading
       setLoading(false);
@@ -59,7 +78,7 @@ function App() {
     .catch(err => console.log(err));
   }, [refresh]);
 
-  //----- Handle chart updates from server
+  //----- Listen for chart updates from server
   useEffect(() => {
     socket.on("update_chart", () => {
       setUpdated(false);
@@ -70,7 +89,7 @@ function App() {
   const handleSubmit = e => {
     // Prevent refresh on submit
     e.preventDefault();
-    // Loading data
+    // Loading in process
     setLoading(true);
     // Create new chart-stock
     ChartStockAPI.create(ticker)
@@ -83,7 +102,9 @@ function App() {
     })
     .then(res => {
       if(res.error) {
-        console.log(res.error);
+        //--- Duplicate stock
+        handlePopup(res.error, "error");
+        setLoading(false);
       } else {
         setRefresh(state => !state);
         // Notify server of chart update
@@ -95,8 +116,9 @@ function App() {
 
   //----- Delete an existing chart-stock
   const handleDelete = ticker => {
-    // Loading data
+    // Loading in process
     setLoading(true);
+    // Delete given chart-stock
     ChartStockAPI.deleteOne(ticker)
     .then(res => {
       setRefresh(state => !state);
@@ -106,9 +128,24 @@ function App() {
     .catch(err => console.log(err));
   };
 
+  //----- Display popup
+  const handlePopup = (message, type) => {
+    setPopupMsg(message);
+    setPopupType(type);
+  };
+
   if(!loading) {
     return (
       <div id="app">
+        {popupMsg && popupType &&
+          <div id="app-popup-wrapper">
+            <Popup
+              message={popupMsg}
+              type={popupType}
+              handlePopup={handlePopup}/>
+          </div>
+        }
+
         <div id="app-header">
           <h1>Stock Market App</h1>
           <div>Compare stocks with weekly price-action</div>
@@ -120,9 +157,17 @@ function App() {
             setRefresh={setRefresh}/>
         </div>
   
-        <div id="app-chart-wrapper">
-          <Chart chartData={chartData}/>
-        </div>
+        {(chartData !== null) &&
+          <div id="app-chart-wrapper">
+            <Chart chartData={chartData}/>
+          </div>
+        }
+
+        {(chartData === null) &&
+          <div id="app-chartEmpty-wrapper">
+            <ChartEmpty/>
+          </div>
+        }
   
         <div id="app-chartStocks-wrapper">
           <ChartStocks 

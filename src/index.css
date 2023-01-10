@@ -3,6 +3,8 @@
 :root {
   /* Colors */
   --light-color: hsla(0, 0%, 90%, 0.5);
+  --light-success-color: hsla(120, 90%, 90%, 0.5);
+  --light-error-color: hsla(0, 90%, 90%, 0.5);
   /* Font Sizes */
   --default-font: 16px;
 }

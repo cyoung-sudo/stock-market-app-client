@@ -7,6 +7,10 @@
   padding: 2rem;
 }
 
+#app-popup-wrapper {
+  margin-bottom: 1rem;
+}
+
 #app-header {
   margin-bottom: 1rem;
   text-align: center;
@@ -17,6 +21,10 @@
   font-style: italic;
 }
 
+#app-updateStatus-wrapper {
+  margin-bottom: 1rem;
+}
+
 #app-chart-wrapper {
   height: 50vh;
   width: 100vw;
@@ -24,17 +32,26 @@
   padding-right: 2rem;
 }
 
+#app-chartEmpty-wrapper {
+  height: 50vh;
+  width: 100vw;
+  margin-bottom: 1rem;
+  background-color: var(--light-color);
+}
+
 /* ----- Breakpoints ----- */
 /* Medium screen devices (768px and above) */
 @media only screen and (min-width: 768px) {
-  #app-chart-wrapper {
+  #app-chart-wrapper,
+  #app-chartEmpty-wrapper {
     width: 80vw;
   }
 }
  
 /* Extra big screen devices (1200px and above) */
 @media only screen and (min-width: 1200px) {
-  #app-chart-wrapper {
+  #app-chart-wrapper,
+  #app-chartEmpty-wrapper {
     width: 60vw;
   }
 }
