@@ -5,7 +5,9 @@ import { FiRefreshCw } from "react-icons/fi";
 
 export default function UpdateStatus(props) {
   return (
-    <div id="updateStatus">
+    <div 
+      data-testid="updateStatus"
+      id="updateStatus">
       {props.updated &&
         <div id="updateStatus-updated"><span><BsFillCheckCircleFill/></span>Updated</div>
       }

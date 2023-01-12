@@ -31,7 +31,9 @@ export default function Chart(props) {
 
   if(props.chartData) {
     return (
-      <div id="chart">
+      <div 
+        data-testid="chart"
+        id="chart">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart>
             <CartesianGrid stroke="#f5f5f5" />

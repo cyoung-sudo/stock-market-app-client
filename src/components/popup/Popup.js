@@ -23,6 +23,7 @@ export default function Popup(props) {
 
   return (
     <div 
+      data-testid="popup"
       id="popup"
       className={props.type === "success" ? "popup-success" : "popup-error"}>
       {props.message}
