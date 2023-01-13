@@ -22,6 +22,13 @@ jest.mock("recharts", () => ({
 describe("----- <App/> -----", () => {
   beforeEach(() => {
     // Mock API functions
+    ChartStockAPI.getAll.mockResolvedValue({
+      data: [
+        { ticker: "AAPL" },
+        { ticker: "GOOG"}
+      ]
+    });
+
     StockDataAPI.getAll.mockResolvedValue({
       data: {
         success: true,

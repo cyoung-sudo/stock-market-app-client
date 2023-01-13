@@ -41,8 +41,12 @@ function App() {
   useEffect(() => {
     // Loading in process
     setLoading(true);
-    // Retrieve all chart-stock data
-    StockDataAPI.getAll()
+    // Retrieve all chart-stocks
+    ChartStockAPI.getAll()
+    .then(res => {
+      // Retrieve all chart-stock data
+      return StockDataAPI.getAll(res.data.chartStocks)
+    })
     .then(res => {
       if(res.data.success) {
         // Check for empty chart
